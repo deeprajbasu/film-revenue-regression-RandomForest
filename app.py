@@ -17,43 +17,48 @@ def homePage():
 def index():
     if request.method == 'POST':
         try:
-            #  reading the inputs given by the user
-            number_of_times_pregnant=float(request.form['number_of_times_pregnant'])
-            plasma_glucose_concentration = float(request.form['plasma_glucose_concentration'])
-            diastolic_blood_pressure = float(request.form['diastolic_blood_pressure'])
-            triceps_skinfold_thickness = float(request.form['triceps_skinfold_thickness'])
-            serum_insulin = float(request.form['serum_insulin'])
-            body_mass_index = float(request.form['body_mass_index'])
-            diabetes_pedigree_function = float(request.form['diabetes_pedigree_function'])
-            age = float(request.form['age'])
 
+
+            #  reading the inputs given by the user
+            budget=float(request.form['budget'])
+            genres = float(request.form['genres'])
+            popularity = float(request.form['popularity'])
+            production_companies = float(request.form['production_companies'])
+            production_countries = float(request.form['production_countries'])
+            release_date = float(request.form['release_date'])
+            runtime = float(request.form['runtime'])
+            spoken_languages = float(request.form['spoken_languages'])
+            vote_average = float(request.form['vote_average'])
+            vote_count = float(request.form['vote_count'])
 
             # Loading the saved models into memory
             filename_scaler = 'scaler_model.pickle'
-            filename = 'xgboost_model.pickle'
+            filename = 'RandomForest_model.pickle'
+
+
             scaler_model = pickle.load(open(filename_scaler, 'rb'))
             loaded_model = pickle.load(open(filename, 'rb'))
 
             # predictions using the loaded model file
-            scaled_data = scaler_model.transform([[number_of_times_pregnant, plasma_glucose_concentration,
-                                                   diastolic_blood_pressure, triceps_skinfold_thickness, serum_insulin,
-                                                   body_mass_index, diabetes_pedigree_function, age]])
+            scaled_data = scaler_model.transform([[budget, genres,
+                                                   popularity, production_companies, production_countries,
+                                                   release_date, runtime, spoken_languages,vote_average,vote_count]])
             prediction = loaded_model.predict(scaled_data)
             print('prediction is', prediction[0])
-            if prediction[0] == 1:
-                result = 'The Patient is Diabetic'
-            else:
-                result = 'The Patient is not Diabetic'
+            # if prediction[0] == 1:
+            #     result = 'The Patient is Diabetic'
+            # else:
+            #     result = 'The Patient is not Diabetic'
 
 
 
 
-            print('prediction is', result)
+            print('prediction is', prediction[0])
             # showing the prediction results in a UI
 
 
 
-            return render_template('results.html',prediction=result)
+            return render_template('results.html',prediction=prediction[0])
 
 
         except Exception as e:
